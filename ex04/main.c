@@ -25,29 +25,29 @@ static void	start_child_process(int *pipe_fd)
 {
 	int		file_fd;
 
-	close(pipe_fd[PIPE_READ_FD]);
-	file_fd = open("access.log", O_RDONLY);
+	close(pipe_fd[PIPE_READ_FD]); // パイプライン読み込み口を閉じる
+	file_fd = open("access.log", O_RDONLY); // access.logファイルを開く
 	if (file_fd == -1)
 	{
 		perror("open");
 		exit(1);
 	}
-	if (dup2(file_fd, STDIN_FILENO) == -1)
+	if (dup2(file_fd, STDIN_FILENO) == -1) // 標準入力をaccess.logファイルFDのコピーとして作成する
 	{
 		close(file_fd);
 		perror("dup2");
 		exit(1);
 	}
-	close(file_fd);
-	if (dup2(pipe_fd[PIPE_WRITE_FD], STDOUT_FILENO) == -1)
+	close(file_fd); // access.logファイルFDを閉じる
+	if (dup2(pipe_fd[PIPE_WRITE_FD], STDOUT_FILENO) == -1) // 標準出力をパイプライン書き込み口のコピーとして作成する
 	{
 		close(pipe_fd[PIPE_WRITE_FD]);
 		perror("dup2");
 		exit(1);
 	}
-	close(pipe_fd[PIPE_WRITE_FD]);
-	execute_child_command();
-	exit(0);
+	close(pipe_fd[PIPE_WRITE_FD]); // パイプライン書き込み口を閉じる
+	execute_child_command(); // 子プロセスの処理を実行する
+	exit(0); // 子プロセスを終了し、親にSIGCHILDが送信される
 }
 
 static void	execute_parent_command()
@@ -67,15 +67,15 @@ static void	execute_parent_command()
 
 static void	start_parent_process(int *pipe_fd)
 {
-	close(pipe_fd[PIPE_WRITE_FD]);
-	if (dup2(pipe_fd[PIPE_READ_FD], STDIN_FILENO) == -1)
+	close(pipe_fd[PIPE_WRITE_FD]); // パイプライン書き込み口を閉じる
+	if (dup2(pipe_fd[PIPE_READ_FD], STDIN_FILENO) == -1) // 標準入力をパイプライン読み込み口のコピーとして作成する
 	{
 		close(pipe_fd[PIPE_READ_FD]);
 		perror("dup2");
 		exit(1);
 	}
-	close(pipe_fd[PIPE_READ_FD]);
-	execute_parent_command();
+	close(pipe_fd[PIPE_READ_FD]); // パイプライン読み込み口を閉じる
+	execute_parent_command();// 親プロセスの処理を実行する
 }
 
 int	main(void)
