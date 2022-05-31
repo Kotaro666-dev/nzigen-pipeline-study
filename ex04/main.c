@@ -9,12 +9,12 @@
 
 static void	execute_child_command()
 {
-	char *argv[2];
+	char *argv[2]; // char型2次元配列
 
-	argv[0] = "/bin/cat";
-	argv[1] = NULL;
+	argv[0] = "/bin/cat"; // 絶対パスで渡す
+	argv[1] = NULL; // 2次元配列の一番後ろにNULLを代入する
 
-	if (execve(argv[0], argv, NULL) == -1)
+	if (execve(argv[0], argv, NULL) == -1) // プログラムを実行する
 	{
 		perror("execve");
 		exit(1);
@@ -52,13 +52,13 @@ static void	start_child_process(int *pipe_fd)
 
 static void	execute_parent_command()
 {
-	char *argv[3];
+	char *argv[3]; // char型2次元配列
 
-	argv[0] = "/usr/bin/grep";
-	argv[1] = "POST";
-	argv[2] = NULL;
+	argv[0] = "/usr/bin/grep"; // 絶対パスで渡す
+	argv[1] = "POST"; // 引数
+	argv[2] = NULL; // 2次元配列の一番後ろにNULLを代入する
 
-	if (execve(argv[0], argv, NULL) == -1)
+	if (execve(argv[0], argv, NULL) == -1) // プログラムを実行する
 	{
 		perror("execve");
 		exit(1);
