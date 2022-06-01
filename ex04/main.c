@@ -7,14 +7,16 @@
 # define PIPE_READ_FD 0
 # define PIPE_WRITE_FD 1
 
+extern char **environ; // 設定されている環境変数
+
 static void	execute_child_command()
 {
 	char *argv[2]; // char型2次元配列
 
-	argv[0] = "/bin/cat"; // 絶対パスで渡す
+	argv[0] = "/bin/cat"; // 実行するコマンドの絶対パス
 	argv[1] = NULL; // 2次元配列の一番後ろにNULLを代入する
 
-	if (execve(argv[0], argv, NULL) == -1) // プログラムを実行する
+	if (execve(argv[0], argv, environ) == -1) // プログラムを実行する
 	{
 		perror("execve");
 		exit(1);
@@ -58,7 +60,7 @@ static void	execute_parent_command()
 	argv[1] = "POST"; // 引数
 	argv[2] = NULL; // 2次元配列の一番後ろにNULLを代入する
 
-	if (execve(argv[0], argv, NULL) == -1) // プログラムを実行する
+	if (execve(argv[0], argv, environ) == -1) // プログラムを実行する
 	{
 		perror("execve");
 		exit(1);
